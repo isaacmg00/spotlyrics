@@ -1,13 +1,14 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import requests
+import json
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id="8536b313f38f4155a21defafccc3de68",
                                                client_secret="2fc41b3c1d6e488b80098033135a9ef5",
                                                redirect_uri="http://localhost:8888/auth",
-                                               scope="streaming"))
+                                               scope="user-read-playback-state"))
 
-# print(sp.auth_manager.scope)
+print(sp.current_playback())
 # print(sp.track(track_id='USUYG1291802'))
 # https://api.musixmatch.com/ws/1.1/artist.get?artist_id=118&apikey=ae9aa98c34e0bb6029ae6bcef2e9b4a7
 
@@ -33,4 +34,12 @@ headers = {
     "TE": "trailers"}
 
 response = requests.get(BASE_URL, headers=headers)
-print(response.text["lines"])
+LYRICS_JSON = response.json()
+
+NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
+print("Number of Lines in the song: " + str(NUM_LINES))
+
+for line in range(0, NUM_LINES):
+    line_one_based = line+1
+    print("Line: " + str(line_one_based) + " " +
+          str(LYRICS_JSON['lyrics']['lines'][line]['words']))
