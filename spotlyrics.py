@@ -24,7 +24,7 @@ headers = {
     "Accept-Language": "en",
     "Accept-Encoding": "gzip, deflate, br",
     "Referer": "https://open.spotify.com/",
-    "authorization": "Bearer BQCJVaoj8tlQegIxO7My4VKqSa4JnAAnHYL8IJeY5uTKuVdPF4nZbsJaRHI1k8ojLmXxntQs4LwWGKrGfGx6n-h9m04QnSOUR93gImejJ8cnNECCB7wZVMjo188Iy8vC3mA3_W3YeZnQ_e_xUMiBare_yNQL7Vnn_m5EkM5BgvG2J8hr_5OFMYHM6MNHqaF77MFLXNhHx2CBRu5UdhhPCG91362dSsO4qcaUDdIHfW11RlGx2I7VGfzC3Fwe-uI53rHgp9CG0q7jm_dTqEmMBGAAjDhUdRAXbyMb8eHIyc4TVZxAc4upb-e6Eb6aSbGUjYY21w",
+    "authorization": "Bearer BQBMjfTAc1dst0963R4Ibs-l8mwtIj5mcJ_HstsmJW6isMu07-HQTz_JleKx_E1r-xlKKFOh-OK8og_KnRtduYG93qYLuy8eCqgfK3WBaurLuirET7ZzBS6KuZMtc23TNc8XR2_K1_GqlvjF0PWyEf5Kfgq_L6vJUIh0QvdjS9BQUcmzGDq5T1XZ2IKLvOVatDhPuA6wf7AHIMtNIBdAVn8cn3AYE5wpYTvJXTrTvH8G9VJxm2bJEbePza45UovFpMe53vdYixPZS8hqKOGA5OBrfUkG6NFb0Qkbz5P98iMVmt7M7Jp4JQKLJ2KvdLKlUMxbRA",
     "app-platform": "WebPlayer",
     "spotify-app-version": "1.1.81.4.gf0a51a16",
     "Origin": "https://open.spotify.com",
@@ -39,22 +39,36 @@ headers = {
 
 response = requests.get(base_url, headers=headers)
 LYRICS_JSON = response.json()
-print(LYRICS_JSON)
+# print(LYRICS_JSON)
 
 NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
+lyrics = []
+ms_timestamp = []
 
-
-print("Number of Lines in the song: " + str(NUM_LINES))
 for line in range(0, NUM_LINES):
     line_one_based = line+1
-    print("line " + str(line_one_based) + ": " +
-          str(LYRICS_JSON['lyrics']['lines'][line]['words']))
+    # print("line " + str(line_one_based) + ": " +
+    # str(LYRICS_JSON['lyrics']['lines'][line]['words']))
+    lyrics.append(LYRICS_JSON['lyrics']['lines'][line]['words'])
+    ms_timestamp.append(LYRICS_JSON['lyrics']['lines'][line]['startTimeMs'])
+
 
 is_playing = sp.current_playback()['is_playing']
+current_progress = sp.current_playback()['progress_ms']
+current_line = 0
+for i in range(0, len(ms_timestamp)-1):
+    if((current_progress >= int(ms_timestamp[i])) and (current_progress <= int(ms_timestamp[i+1]))
+       ):
+        current_line = i
+        print("were on line" + str(i))
+        break
 
 while(True):
-    is_playing = sp.current_playback()['is_playing']
-    print(sp.current_playback()['progress_ms'])
+    current_progress = sp.current_playback()['progress_ms']
+    if(current_progress >= int(ms_timestamp[current_line])):
+        print(str(current_line+1) + " " + str(lyrics[current_line]))
+        current_line += 1
 
+    is_playing = sp.current_playback()['is_playing']
     if(not(is_playing)):
         print("song paused")
