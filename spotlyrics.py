@@ -8,12 +8,6 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id="8536b313f38f4155a21def
                                                redirect_uri="http://localhost:8888/auth",
                                                scope="user-read-playback-state"))
 
-print(sp.current_playback()['item']['album']['images'][0]['url'])
-print()
-# print(sp.track(track_id='USUYG1291802'))
-# https://api.musixmatch.com/ws/1.1/artist.get?artist_id=118&apikey=ae9aa98c34e0bb6029ae6bcef2e9b4a7
-
-
 track_id = sp.current_playback()['item']['id']
 art_image_url = sp.current_playback()['item']['album']['images'][0]['url']
 art_image_directory = art_image_url.split("image/")
@@ -22,9 +16,7 @@ substr = art_image_directory[1]
 base_url = "https://spclient.wg.spotify.com/color-lyrics/v2/track/" + \
     str(track_id) + "/image/https%3A%2F%2Fi.scdn.co%2Fimage%2F" + \
     str(substr) + "?format=json&vocalRemoval=false&market=from_token"
-print(base_url)
 
-print(substr)
 headers = {
     "Host": "spclient.wg.spotify.com",
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0",
@@ -32,7 +24,7 @@ headers = {
     "Accept-Language": "en",
     "Accept-Encoding": "gzip, deflate, br",
     "Referer": "https://open.spotify.com/",
-    "authorization": "Bearer BQBsKS3v-m3pTYRiSFdFAOCabjVgtdZe4zeO9geFAZM5QFetpVOhYNCigC_K294kwDorT6udyy3m3eCA-CbX0W1KjsPkjQF-zfW-CPv3cslI5GhVkRU0Y7UTR0STi4Olm5Zt3ytRGJ9SKEYKonXOxFzlZmYrWEU1ILbxdPt_nWW5_zngzM84gcYyYT2KaitLQHR_UW7-ZZ-41QKfuCuczHZUuDNpnven8SX8Fb2TyxiYgEI9Kpx9qZ8Da82hKbYQlKwamJ6eYBxgOm8ImVIE0jZ0WfvJrO5UdzSUOstI",
+    "authorization": "Bearer BQCJVaoj8tlQegIxO7My4VKqSa4JnAAnHYL8IJeY5uTKuVdPF4nZbsJaRHI1k8ojLmXxntQs4LwWGKrGfGx6n-h9m04QnSOUR93gImejJ8cnNECCB7wZVMjo188Iy8vC3mA3_W3YeZnQ_e_xUMiBare_yNQL7Vnn_m5EkM5BgvG2J8hr_5OFMYHM6MNHqaF77MFLXNhHx2CBRu5UdhhPCG91362dSsO4qcaUDdIHfW11RlGx2I7VGfzC3Fwe-uI53rHgp9CG0q7jm_dTqEmMBGAAjDhUdRAXbyMb8eHIyc4TVZxAc4upb-e6Eb6aSbGUjYY21w",
     "app-platform": "WebPlayer",
     "spotify-app-version": "1.1.81.4.gf0a51a16",
     "Origin": "https://open.spotify.com",
@@ -42,16 +34,27 @@ headers = {
     "Sec-Fetch-Site": "same-site",
     "Pragma": "no-cache",
     "Cache-Control": "no-cache",
-    "TE": "trailers"}
+    "TE": "trailers"
+}
 
 response = requests.get(base_url, headers=headers)
 LYRICS_JSON = response.json()
-# print(LYRICS_JSON)
+print(LYRICS_JSON)
 
 NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
-print("Number of Lines in the song: " + str(NUM_LINES))
 
+
+print("Number of Lines in the song: " + str(NUM_LINES))
 for line in range(0, NUM_LINES):
     line_one_based = line+1
-    print("Line: " + str(line_one_based) + " " +
+    print("line " + str(line_one_based) + ": " +
           str(LYRICS_JSON['lyrics']['lines'][line]['words']))
+
+is_playing = sp.current_playback()['is_playing']
+
+while(True):
+    is_playing = sp.current_playback()['is_playing']
+    print(sp.current_playback()['progress_ms'])
+
+    if(not(is_playing)):
+        print("song paused")
