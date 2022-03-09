@@ -24,7 +24,7 @@ headers = {
     "Accept-Language": "en",
     "Accept-Encoding": "gzip, deflate, br",
     "Referer": "https://open.spotify.com/",
-    "authorization": "Bearer BQBMjfTAc1dst0963R4Ibs-l8mwtIj5mcJ_HstsmJW6isMu07-HQTz_JleKx_E1r-xlKKFOh-OK8og_KnRtduYG93qYLuy8eCqgfK3WBaurLuirET7ZzBS6KuZMtc23TNc8XR2_K1_GqlvjF0PWyEf5Kfgq_L6vJUIh0QvdjS9BQUcmzGDq5T1XZ2IKLvOVatDhPuA6wf7AHIMtNIBdAVn8cn3AYE5wpYTvJXTrTvH8G9VJxm2bJEbePza45UovFpMe53vdYixPZS8hqKOGA5OBrfUkG6NFb0Qkbz5P98iMVmt7M7Jp4JQKLJ2KvdLKlUMxbRA",
+    "authorization": "Bearer BQAFoXzsa7K6tIlO7xR3qCafXTjOweCfMaL3K_a3IH5cS22MXg5sr1H4gnJFDrHuI8HC26AWZV5RJB-M5HKuMKzsxkQ-HDOhw_VdtUtLh8tmrfPupj6my7QTJ9XRJTKE0a063iOUocgyGq1tTc9B8Wvb7U_Rl8LWY-ZjxIK33QJJhFJbeEKMOG4wmOrF4q_260mp4N4z8n5PJptMHLALkB9Ak1PqmTVvFVjWxj2abX5xHzylBdk9aHVerJ5uqN8zQ5RVtfm9b1DatduPuUr8di4LyYHgRY3BfhVmiG0aEYpm1t62zpgZvwtA_OLLB70W4-Yazw",
     "app-platform": "WebPlayer",
     "spotify-app-version": "1.1.81.4.gf0a51a16",
     "Origin": "https://open.spotify.com",
@@ -42,6 +42,7 @@ LYRICS_JSON = response.json()
 # print(LYRICS_JSON)
 
 NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
+
 lyrics = []
 ms_timestamp = []
 
@@ -66,7 +67,7 @@ for i in range(0, len(ms_timestamp)-1):
 while(True):
     current_progress = sp.current_playback()['progress_ms']
     if(current_progress >= int(ms_timestamp[current_line])):
-        print(str(current_line+1) + " " + str(lyrics[current_line]))
+        print(str(current_line+1) + "-" + str(lyrics[current_line]))
         current_line += 1
 
     is_playing = sp.current_playback()['is_playing']
