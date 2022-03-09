@@ -5,7 +5,7 @@ import json
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id="8536b313f38f4155a21defafccc3de68",
                                                client_secret="2fc41b3c1d6e488b80098033135a9ef5",
-                                               redirect_uri="http://localhost:8888/auth",
+                                               redirect_uri="http://localhost:8888/",
                                                scope="user-read-playback-state"))
 
 track_id = sp.current_playback()['item']['id']
@@ -24,7 +24,7 @@ headers = {
     "Accept-Language": "en",
     "Accept-Encoding": "gzip, deflate, br",
     "Referer": "https://open.spotify.com/",
-    "authorization": "Bearer BQAFoXzsa7K6tIlO7xR3qCafXTjOweCfMaL3K_a3IH5cS22MXg5sr1H4gnJFDrHuI8HC26AWZV5RJB-M5HKuMKzsxkQ-HDOhw_VdtUtLh8tmrfPupj6my7QTJ9XRJTKE0a063iOUocgyGq1tTc9B8Wvb7U_Rl8LWY-ZjxIK33QJJhFJbeEKMOG4wmOrF4q_260mp4N4z8n5PJptMHLALkB9Ak1PqmTVvFVjWxj2abX5xHzylBdk9aHVerJ5uqN8zQ5RVtfm9b1DatduPuUr8di4LyYHgRY3BfhVmiG0aEYpm1t62zpgZvwtA_OLLB70W4-Yazw",
+    "authorization": "Bearer BQCDz_MfCpAjbUmbvdm_UyRGrXXfQgT2nEIWPY0SualnHObapT1CjOyutq4fMRyrrGlXkp7qrsN-yO75axCmjbNM0xev6AFDtL4fDZdFjmB14kuRp91YbFbvVGzOa23w5obQMQzIu2fAou0tKnNR17e6LgWKxHHh1w",
     "app-platform": "WebPlayer",
     "spotify-app-version": "1.1.81.4.gf0a51a16",
     "Origin": "https://open.spotify.com",

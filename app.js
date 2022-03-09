@@ -64,6 +64,40 @@ app.get("/login", function (req, res) {
 });
 
 app.get("/callback", function (req, res) {
+  //var code = req.query.code || null;
+  var code =
+    "AQB6ZZZJ1oo6t24KlNoUxLuvzWxiX1cw7pp4h7brLP2fG8X38A6P3-1YRjZVKiJoS4pKb3a1FeNmhCVTLlvKp6vZTeVp-1vKVwcAeAtyyzwpFDyN3QiUpvnZ2vgKSZrC34P51BsZFs4KvP6Ew7y4ljWPoofIi-sPPBjYCU0rrKyUsakBqY6BGo2r-AUafrzP3lm8ihLxH9DH-oimj2o";
+  var state = "f9KJzVjJYCHV8Ic3";
+  //var state = req.query.state || null;
+
+  if (state != null) {
+    res.redirect(
+      "/#" +
+        querystring.stringify({
+          error: "state_mismatch",
+        })
+    );
+  } else {
+    var authOptions = {
+      url: "https://accounts.spotify.com/api/token",
+      form: {
+        code: code,
+        redirect_uri: redirect_uri,
+        grant_type: "authorization_code",
+      },
+      headers: {
+        Authorization:
+          "Basic " +
+          new Buffer(client_id + ":" + client_secret).toString("base64"),
+      },
+      json: true,
+    };
+    console.log(res);
+  }
+});
+
+/*
+app.get("/callback", function (req, res) {
   // your application requests refresh and access tokens
   // after checking the state parameter
   console.log("HJ");
@@ -134,7 +168,7 @@ app.get("/callback", function (req, res) {
     });
   }
 });
-
+*/
 app.get("/refresh_token", function (req, res) {
   // requesting access token from refresh token
   var refresh_token = req.query.refresh_token;
