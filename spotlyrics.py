@@ -28,7 +28,7 @@ headers = {
     "Accept-Language": "en",
     "Accept-Encoding": "gzip, deflate, br",
     "Referer": "https://open.spotify.com/",
-    "authorization": "Bearer BQDiOfquAWYs-EeRK2kFj_1MkdfeOzkAbID09mVe5rBY7SuiYofVi0pvn7oKqGFcovCdZ5PyMXzmJbEayqJ3ZkwvHwV21I1wK9RafYhOH6_Jz8eoJ_ieBZW0HfHxd8Y7-x-MyjLSiNV3Y5NAUplvxOnIem4e4NOpqEsvTIUKdBqVp4CDV0kqEmSeQodxAJlWbeVWH8epAQtMWbwYatAChmW-r4CHN12thAVN0qE7NWNg27Ds0zHEq5OTxR4BfMkgSvIQ3bUXzKAyChAMfIEUyIlkze5J_U1c2Moahu3V",
+    "authorization": "Bearer BQBo-MwDX7oyjgQRRtiY4tyJXnxVIxS3jb9PbPgAVHk72NA_s0Y-uYmikF0-HrF3cjUBn8oDZAuwBUGS4O9yKg7_BbI8gfHiv6vhtgteTeVR4JW_QH9jdKWF4a_44TiBiZmnc_ZIemH4kTbgYLLa2fas99yQW_28790USiwBmDQkd5MPPffw7iO8NGLYMVoD2SIV7qoUHy1gFhuhltTDdlsnb5vApWXpgmCOE4H6sXiVL--bI12x5DW8hsVZ6nKOznyirtMyQ8WWtA5QIcakiOjRMaBHB-7O4hxDJ-ii",
     "app-platform": "WebPlayer",
     "spotify-app-version": "1.1.81.4.gf0a51a16",
     "Origin": "https://open.spotify.com",
