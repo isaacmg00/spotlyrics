@@ -1,10 +1,12 @@
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
-import requests
 import json
 import os
-os.system('cls' if os.name == 'nt' else 'clear')
 
+import requests
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+
+
+os.system('cls' if os.name == 'nt' else 'clear')
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id="8536b313f38f4155a21defafccc3de68",
                                                client_secret="2fc41b3c1d6e488b80098033135a9ef5",
                                                redirect_uri="http://localhost:8888/",
@@ -12,10 +14,10 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id="8536b313f38f4155a21def
 
 # exec(open("get_cookie.py").read())
 
-# user-read-currently-playing
-# user-read-playback-state
+track_name = sp.current_playback()['item']['name']
+track_artist = sp.current_playback()['item']['artists'][0]['name']
 
-print(sp.current_playback())
+
 track_id = sp.current_playback()['item']['id']
 art_image_url = sp.current_playback()['item']['album']['images'][0]['url']
 art_image_directory = art_image_url.split("image/")
@@ -32,7 +34,7 @@ headers = {
     "Accept-Language": "en",
     "Accept-Encoding": "gzip, deflate, br",
     "Referer": "https://open.spotify.com/",
-    "authorization": "Bearer BQBrOPktmvR-4VTTmQrdFfnBRzUguZZKCZbqvmgeEd5oDsbYGcj2_O_e1GxyxH1EQYYK_uBpVGiNiEFYPUBdy_mdqoDFryXBF40sASU2xXgbU8KfIbgrNCJuXE02HB_RZNOnxBLw-gfERFsuR87k8E9qRqhom3TFCXGQRgua_c6Bxujd7ZN_lF1dEoSALwLmh4fl4dzZfYY7AFGImt38yokxlN-Z90qvXILAWA4ItQpj-1tHdHOcfieMq0Cur1Y85YIx01rUQv0sytkVAFcVT_ZX9VXzyUwVcexoskQM",
+    "authorization": "Bearer BQAe2_dXjE1HOPR_o40GzepdR_5QfZm5_D5KYjyKDGKDPsY5QP32wlRutYzAUg5bGdSSEbmZj2utrQNT609sSQVOwHpC7y706tI0SExzTdwBzwZWCM_mWmDM1p9I9GL_It6TX9SQ41cgC9c1bx3Y-yXN8omqAAZt_mQI3tdf8JgF6AtgFR-i6lz-whdo1e5t4WFeVNlRO3gRTaEII6EJSwLO0MuKW1uoc-hUYg-jE9lq2vTIe_sCr2ckYrWWqU2UHCtER0w-DnA8NOav3FqBlra3DeOZEIpU6ftPveNz",
     "app-platform": "WebPlayer",
     "spotify-app-version": "1.1.81.4.gf0a51a16",
     "Origin": "https://open.spotify.com",
@@ -47,7 +49,7 @@ headers = {
 
 response = requests.get(base_url, headers=headers)
 LYRICS_JSON = response.json()
-print(LYRICS_JSON)
+# print(LYRICS_JSON)
 
 NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
 
@@ -56,23 +58,22 @@ ms_timestamp = []
 
 for line in range(0, NUM_LINES):
     line_one_based = line+1
-    # print("line " + str(line_one_based) + ": " +
-    # str(LYRICS_JSON['lyrics']['lines'][line]['words']))
     lyrics.append(LYRICS_JSON['lyrics']['lines'][line]['words'])
     ms_timestamp.append(LYRICS_JSON['lyrics']['lines'][line]['startTimeMs'])
 
-
 is_playing = sp.current_playback()['is_playing']
+
+if(is_playing):
+    print("Now Playing: ", track_artist, "-", track_name)
 current_progress = sp.current_playback()['progress_ms']
 current_line = 0
 for i in range(0, len(ms_timestamp)-1):
     if((current_progress >= int(ms_timestamp[i])) and (current_progress <= int(ms_timestamp[i+1]))
        ):
         current_line = i
-        print("were on line" + str(i))
         break
 
-os.system('cls' if os.name == 'nt' else 'clear')
+# os.system('cls' if os.name == 'nt' else 'clear')
 
 while(True):
     current_progress = sp.current_playback()['progress_ms']
