@@ -2,11 +2,15 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import requests
 import json
+import os
+os.system('cls' if os.name == 'nt' else 'clear')
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id="8536b313f38f4155a21defafccc3de68",
                                                client_secret="2fc41b3c1d6e488b80098033135a9ef5",
                                                redirect_uri="http://localhost:8888/",
                                                scope="user-read-playback-state"))
+
+# exec(open("get_cookie.py").read())
 
 # user-read-currently-playing
 # user-read-playback-state
@@ -28,7 +32,7 @@ headers = {
     "Accept-Language": "en",
     "Accept-Encoding": "gzip, deflate, br",
     "Referer": "https://open.spotify.com/",
-    "authorization": "Bearer BQBo-MwDX7oyjgQRRtiY4tyJXnxVIxS3jb9PbPgAVHk72NA_s0Y-uYmikF0-HrF3cjUBn8oDZAuwBUGS4O9yKg7_BbI8gfHiv6vhtgteTeVR4JW_QH9jdKWF4a_44TiBiZmnc_ZIemH4kTbgYLLa2fas99yQW_28790USiwBmDQkd5MPPffw7iO8NGLYMVoD2SIV7qoUHy1gFhuhltTDdlsnb5vApWXpgmCOE4H6sXiVL--bI12x5DW8hsVZ6nKOznyirtMyQ8WWtA5QIcakiOjRMaBHB-7O4hxDJ-ii",
+    "authorization": "Bearer BQBrOPktmvR-4VTTmQrdFfnBRzUguZZKCZbqvmgeEd5oDsbYGcj2_O_e1GxyxH1EQYYK_uBpVGiNiEFYPUBdy_mdqoDFryXBF40sASU2xXgbU8KfIbgrNCJuXE02HB_RZNOnxBLw-gfERFsuR87k8E9qRqhom3TFCXGQRgua_c6Bxujd7ZN_lF1dEoSALwLmh4fl4dzZfYY7AFGImt38yokxlN-Z90qvXILAWA4ItQpj-1tHdHOcfieMq0Cur1Y85YIx01rUQv0sytkVAFcVT_ZX9VXzyUwVcexoskQM",
     "app-platform": "WebPlayer",
     "spotify-app-version": "1.1.81.4.gf0a51a16",
     "Origin": "https://open.spotify.com",
@@ -67,6 +71,8 @@ for i in range(0, len(ms_timestamp)-1):
         current_line = i
         print("were on line" + str(i))
         break
+
+os.system('cls' if os.name == 'nt' else 'clear')
 
 while(True):
     current_progress = sp.current_playback()['progress_ms']
