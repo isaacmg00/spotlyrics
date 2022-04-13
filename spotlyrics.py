@@ -8,15 +8,12 @@ from dotenv import load_dotenv
 from spotipy.oauth2 import SpotifyOAuth
 
 load_dotenv()
-MY_ENV_VAR = os.getenv('MY_ENV_VAR')
-print(MY_ENV_VAR)
 # clear the terminal when the program starts
 os.system('cls' if os.name == 'nt' else 'clear')
 
-print(MY_ENV_VAR)
-
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id="8536b313f38f4155a21defafccc3de68",
-                                               client_secret="2fc41b3c1d6e488b80098033135a9ef5",
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=os.getenv('CLIENT_ID'),
+                                               client_secret=os.getenv(
+                                                   'CLIENT_SECRET'),
                                                redirect_uri="http://localhost:8888/",
                                                scope="user-read-playback-state"))
 
@@ -37,6 +34,7 @@ base_url = "https://spclient.wg.spotify.com/color-lyrics/v2/track/" + \
     str(track_id) + "/image/https%3A%2F%2Fi.scdn.co%2Fimage%2F" + \
     str(substr) + "?format=json&vocalRemoval=false&market=from_token"
 
+# authorization header is expired
 headers = {
     "Host": "spclient.wg.spotify.com",
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0",
