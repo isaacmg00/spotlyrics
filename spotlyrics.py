@@ -4,11 +4,16 @@ import os
 import subprocess
 import requests
 import spotipy
+from dotenv import load_dotenv
 from spotipy.oauth2 import SpotifyOAuth
 
+load_dotenv()
+MY_ENV_VAR = os.getenv('MY_ENV_VAR')
+print(MY_ENV_VAR)
 # clear the terminal when the program starts
 os.system('cls' if os.name == 'nt' else 'clear')
 
+print(MY_ENV_VAR)
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id="8536b313f38f4155a21defafccc3de68",
                                                client_secret="2fc41b3c1d6e488b80098033135a9ef5",
