@@ -36,8 +36,8 @@ class Cookie:
                  sp_phash,
                  sp_gaid,
                  _rdt_uuid,
-                 _gcl_au,
-                 sp_landing):
+                 _gcl_au
+                 ):
         pass
 
     def create_cookie_header(self):
@@ -53,8 +53,7 @@ class Cookie:
             ";sp_key=" + self.sp_key + ";sp_last_utm=" + \
             self.sp_last_utm + ";sp_phash=" + self.sp_phash + \
             ";sp_gaid=" + self.sp_gaid + ";_rdt_uuid=" + \
-            self._rdt_uuid + ";_gcl_au=" + self._gcl_au + \
-            ";sp_landing=" + self.sp_landing + "'"
+            self._rdt_uuid + ";_gcl_au=" + self._gcl_au + "'"
         return cookie
 
 
@@ -83,8 +82,8 @@ auth_cookie = Cookie(sp_adid=None,
                      sp_phash=None,
                      sp_gaid=None,
                      _rdt_uuid=None,
-                     _gcl_au=None,
-                     sp_landing=None)
+                     _gcl_au=None
+                     )
 
 cookie_list = []
 for cookie in cookies:
@@ -117,7 +116,6 @@ auth_cookie.sp_phash = cookie_dict["sp_phash"]
 auth_cookie.sp_gaid = cookie_dict["sp_gaid"]
 auth_cookie._rdt_uuid = cookie_dict["_rdt_uuid"]
 auth_cookie._gcl_au = cookie_dict["_gcl_au"]
-auth_cookie.sp_landing = cookie_dict["sp_landing"]
 
 spotify_cookie = auth_cookie.create_cookie_header()
 
