@@ -69,7 +69,8 @@ def GET_LYRICS(sp):
                 "Accept-Language": "en",
                 "Accept-Encoding": "gzip, deflate, br",
                 "Referer": "https://open.spotify.com/",
-                "authorization": "Bearer " + output,
+                # "authorization": "Bearer " + output,
+                "authorization": "Bearer BQDwN7UXlpwd3mTtGWdDtMBl4z5Fe7GPGNnqoM_rKo1KAptj1YVA0zT4rUlHMy8baHP9z7_RfT-xUR28t47D4j3DWVaT5M_CUJEjD8T2LoOE0EpvVqPf-ywST1x7SY4B3WR4x3v-kcNXMoa_d5MPn8BGEVysynjggbABPjIN4YSJkloh72IxOxxR1o5brUXxXGC91y7vNed9ZP_EXvbYliY-9C3yGKpe1Zj7kH1FeJuHQBK31MvKMC_ilUc3qmGDZb5sMXt-2GKsdJ61cnHRgcPYNKD9ZjGedQzr6fFp",
                 "app-platform": "WebPlayer",
                 "spotify-app-version": "1.1.81.4.gf0a51a16",
                 "Origin": "https://open.spotify.com",
@@ -116,7 +117,6 @@ def GET_LYRICS(sp):
             current_line = i
             break
 
-    print("F chat")
     result.append(ms_timestamp)
     result.append(current_line)
     result.append(lyrics)
