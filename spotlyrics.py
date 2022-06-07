@@ -62,6 +62,7 @@ def GET_LYRICS(sp):
     except (KeyError, TypeError):
         if(RESP_CODE == 401):
             output = subprocess.getoutput('python get_cookie.py')
+            print(output)
             headers = {
                 "Host": "spclient.wg.spotify.com",
                 "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0",
@@ -70,7 +71,7 @@ def GET_LYRICS(sp):
                 "Accept-Encoding": "gzip, deflate, br",
                 "Referer": "https://open.spotify.com/",
                 # "authorization": "Bearer " + output,
-                "authorization": "Bearer BQDwN7UXlpwd3mTtGWdDtMBl4z5Fe7GPGNnqoM_rKo1KAptj1YVA0zT4rUlHMy8baHP9z7_RfT-xUR28t47D4j3DWVaT5M_CUJEjD8T2LoOE0EpvVqPf-ywST1x7SY4B3WR4x3v-kcNXMoa_d5MPn8BGEVysynjggbABPjIN4YSJkloh72IxOxxR1o5brUXxXGC91y7vNed9ZP_EXvbYliY-9C3yGKpe1Zj7kH1FeJuHQBK31MvKMC_ilUc3qmGDZb5sMXt-2GKsdJ61cnHRgcPYNKD9ZjGedQzr6fFp",
+                "authorization": "Bearer BQAQ0wrTuWEtkS4RMNu5J1tyxE0ScyoP1DKrYAL0zo4JtNeIGVjcRSQo85O04RHZFwEBkRAo3fKfkhsBg8JtvsavIym_YjjGFyoPts14N2ftOGLR7lAD9fY6WOhHi0PEkj-PyEjzJ-7UvpqPagQc3JIz7WVuQsAKumj7wUcxY6MYyZim-x62IpkZ7-44sYcU7B_sfNFoeUtmAiUD9LJls-clSqTIJ8nKqcMRxAHrvKiw4F-kVYNGNEviI-Xu_KirE7629jrdWvwFPX37gl4X0KlAuCM928MGErKjXG9j",
                 "app-platform": "WebPlayer",
                 "spotify-app-version": "1.1.81.4.gf0a51a16",
                 "Origin": "https://open.spotify.com",
@@ -90,6 +91,7 @@ def GET_LYRICS(sp):
 
     except:
         print("no lyrics found for this track")
+        print(RESP_CODE)
         exit()
 
     os.system('cls' if os.name == 'nt' else 'clear')
