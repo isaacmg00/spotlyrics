@@ -48,7 +48,7 @@ def IS_PLAYING():
     return sp.current_playback()['is_playing']
 
 
-def GET_RESPONSE():
+def GET_LYRIC_DATA():
     result = []
     art_image_url = sp.current_playback()['item']['album']['images'][0]['url']
     art_image_directory = art_image_url.split("image/")
@@ -106,135 +106,13 @@ def GET_RESPONSE():
     return result
 
 
-GET_RESPONSE()
-
-
-def GET_TRACK_INFO():
-    pass
-
-
-def GET_LYRICS(sp):
-    result = []
-    try:
-        track_name = sp.current_playback()['item']['name']
-        track_artist = sp.current_playback()['item']['artists'][0]['name']
-    except TypeError:
-        print("No song is playing.")
-        exit()
-
+def PRINT_INTERACTIVE_LYRICS(data):
     track_id = sp.current_playback()['item']['id']
-    result.append(track_id)
-    art_image_url = sp.current_playback()['item']['album']['images'][0]['url']
-    art_image_directory = art_image_url.split("image/")
-    substr = art_image_directory[1]
-
-    base_url = "https://spclient.wg.spotify.com/color-lyrics/v2/track/" + \
-        str(track_id) + "/image/https%3A%2F%2Fi.scdn.co%2Fimage%2F" + \
-        str(substr) + "?format=json&vocalRemoval=false&market=from_token"
-
-    # authorization header is expired
-    headers = {
-        "Host": "spclient.wg.spotify.com",
-        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0",
-        "Accept": "application/json",
-        "Accept-Language": "en",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Referer": "https://open.spotify.com/",
-        "authorization": "Bearer BQAVbkHmAT5EPzecYg3N_Vm63xo-7icpW4k5spsPQD3NAXutpxyAlqRiYB5vvU7BZWJqE-NMiqycf7zdEzR01cx4g-2PWeuc25LgF5kKXI3wXndqvnrwzioCIvhIKaJQNIB-UM-ItClC4S_zIlQJUuUIBfaZYXi_nr8zMtTFw5Z62OiPFbSOkflhoL-TifNIMDNtu2SYnT4OLfJ_rxGalxug4q0XlUzeIEnLt3V_nS0X5B0LlBleBlxTnUTDJzzggEPqfnn1p9qSzuwjSGIIYVdehpZ5Q71H3Xu5pDm1",
-        "app-platform": "WebPlayer",
-        "spotify-app-version": "1.1.81.4.gf0a51a16",
-        "Origin": "https://open.spotify.com",
-        "Connection": "keep-alive",
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-site",
-        "Pragma": "no-cache",
-        "Cache-Control": "no-cache",
-        "TE": "trailers"
-    }
-
-    response = requests.get(base_url, headers=headers)
-    RESP_CODE = response.status_code
-
-    try:
-        LYRICS_JSON = response.json()
-        NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
-
-    except (KeyError, TypeError):
-        if(RESP_CODE == 401):
-            output = subprocess.getoutput('python get_cookie.py')
-            headers = {
-                "Host": "spclient.wg.spotify.com",
-                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0",
-                "Accept": "application/json",
-                "Accept-Language": "en",
-                "Accept-Encoding": "gzip, deflate, br",
-                "Referer": "https://open.spotify.com/",
-                "authorization": "Bearer " + output,
-                "app-platform": "WebPlayer",
-                "spotify-app-version": "1.1.81.4.gf0a51a16",
-                "Origin": "https://open.spotify.com",
-                "Connection": "keep-alive",
-                "Sec-Fetch-Dest": "empty",
-                "Sec-Fetch-Mode": "cors",
-                "Sec-Fetch-Site": "same-site",
-                "Pragma": "no-cache",
-                "Cache-Control": "no-cache",
-                "TE": "trailers"
-            }
-            response = requests.get(base_url, headers=headers)
-
-    try:
-        LYRICS_JSON = response.json()
-        code = response.status_code
-
-    except:
-        print("no lyrics found for this track")
-        print(RESP_CODE)
-        exit()
-
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-    NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
-
-    lyrics = []
-    ms_timestamp = []
-
-    for line in range(0, NUM_LINES):
-        line_one_based = line+1
-        lyrics.append(LYRICS_JSON['lyrics']['lines'][line]['words'])
-        ms_timestamp.append(
-            LYRICS_JSON['lyrics']['lines'][line]['startTimeMs'])
-
-    is_playing = sp.current_playback()['is_playing']
-
-    if(is_playing):
-        print("Now Playing: ", track_artist, "-", track_name)
-    current_progress = sp.current_playback()['progress_ms']
-    current_line = 0
-    for i in range(0, len(ms_timestamp)-1):
-        if((current_progress >= int(ms_timestamp[i])) and (current_progress <= int(ms_timestamp[i+1]))
-           ):
-            current_line = i
-            break
-
-    result.append(ms_timestamp)
-    result.append(current_line)
-    result.append(lyrics)
-    return result
-
-
-# print(GET_LYRICS(sp))
-args = GET_LYRICS(sp)
-
-
-def spotlyrics(arg):
-    track_id = arg[0]
-    ms_timestamp = arg[1]
-    current_line = arg[2]
-    lyrics = arg[3]
+    ms_timestamp = data[0]
+    current_line = data[1]
+    lyrics = data[2]
     starttime = time.time()
-    while False:
+    while True:
         track_id2 = sp.current_playback()['item']['id']
         if(track_id != track_id2):
             print("song has changed")
@@ -243,7 +121,6 @@ def spotlyrics(arg):
             track_id2 = new_track_id
             print(track_id)
             print(track_id2)
-
             break
 
         current_progress = sp.current_playback()['progress_ms']
@@ -260,5 +137,9 @@ def spotlyrics(arg):
         time.sleep(0.5 - ((time.time() - starttime) % 0.5))
 
 
-while(True):
-    spotlyrics(args)
+data = GET_LYRIC_DATA()
+PRINT_INTERACTIVE_LYRICS(data)
+
+
+def GET_TRACK_INFO():
+    pass
