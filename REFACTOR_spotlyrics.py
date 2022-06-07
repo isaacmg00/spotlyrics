@@ -13,13 +13,22 @@ load_dotenv()
 # clear the terminal when the program starts
 os.system('cls' if os.name == 'nt' else 'clear')
 
+
+def REFRESH_BEARER_TOKEN():
+    pass
+
+
+def GET_BEARER_TOKEN():
+    pass
+
+
 def GET_LYRICS(sp):
     result = []
     try:
         track_name = sp.current_playback()['item']['name']
         track_artist = sp.current_playback()['item']['artists'][0]['name']
     except TypeError:
-        print("No song is playing, try again.")
+        print("No song is playing.")
         exit()
 
     track_id = sp.current_playback()['item']['id']

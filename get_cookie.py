@@ -37,8 +37,6 @@ for cookie in cookies:
 
 
 cookie_dict = Convert(cookie_list)
-
-
 auth_cookie.sp_t = cookie_dict["sp_t"]
 auth_cookie.sp_dc = cookie_dict["sp_dc"]
 
