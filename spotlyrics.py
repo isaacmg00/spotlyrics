@@ -62,7 +62,6 @@ def GET_LYRICS(sp):
     except (KeyError, TypeError):
         if(RESP_CODE == 401):
             output = subprocess.getoutput('python get_cookie.py')
-            print(output)
             headers = {
                 "Host": "spclient.wg.spotify.com",
                 "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0",
@@ -70,8 +69,7 @@ def GET_LYRICS(sp):
                 "Accept-Language": "en",
                 "Accept-Encoding": "gzip, deflate, br",
                 "Referer": "https://open.spotify.com/",
-                # "authorization": "Bearer " + output,
-                "authorization": "Bearer BQAQ0wrTuWEtkS4RMNu5J1tyxE0ScyoP1DKrYAL0zo4JtNeIGVjcRSQo85O04RHZFwEBkRAo3fKfkhsBg8JtvsavIym_YjjGFyoPts14N2ftOGLR7lAD9fY6WOhHi0PEkj-PyEjzJ-7UvpqPagQc3JIz7WVuQsAKumj7wUcxY6MYyZim-x62IpkZ7-44sYcU7B_sfNFoeUtmAiUD9LJls-clSqTIJ8nKqcMRxAHrvKiw4F-kVYNGNEviI-Xu_KirE7629jrdWvwFPX37gl4X0KlAuCM928MGErKjXG9j",
+                "authorization": "Bearer " + output,
                 "app-platform": "WebPlayer",
                 "spotify-app-version": "1.1.81.4.gf0a51a16",
                 "Origin": "https://open.spotify.com",
