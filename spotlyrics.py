@@ -13,6 +13,7 @@ load_dotenv()
 # clear the terminal when the program starts
 os.system('cls' if os.name == 'nt' else 'clear')
 
+
 def GET_LYRICS(sp):
     result = []
     try:

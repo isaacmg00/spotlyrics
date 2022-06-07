@@ -13,12 +13,103 @@ load_dotenv()
 # clear the terminal when the program starts
 os.system('cls' if os.name == 'nt' else 'clear')
 
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=os.getenv('CLIENT_ID'),
+                                               client_secret=os.getenv(
+    'CLIENT_SECRET'),
+    redirect_uri="http://localhost:8888/",
+    scope="user-read-playback-state"))
+
+track_name = sp.current_playback()['item']['name']
+track_artist = sp.current_playback()['item']['artists'][0]['name']
+track_id = sp.current_playback()['item']['id']
+
+art_image_url = sp.current_playback()['item']['album']['images'][0]['url']
+art_image_directory = art_image_url.split("image/")
+substr = art_image_directory[1]
+
+base_url = "https://spclient.wg.spotify.com/color-lyrics/v2/track/" + \
+    str(track_id) + "/image/https%3A%2F%2Fi.scdn.co%2Fimage%2F" + \
+    str(substr) + "?format=json&vocalRemoval=false&market=from_token"
+
+
+# todo: load the token from a pickle for security
+BEARER_TOKEN = ''
+
 
 def REFRESH_BEARER_TOKEN():
     pass
 
 
 def GET_BEARER_TOKEN():
+    pass
+
+
+def IS_PLAYING():
+    return sp.current_playback()['is_playing']
+
+
+def GET_RESPONSE():
+    result = []
+    art_image_url = sp.current_playback()['item']['album']['images'][0]['url']
+    art_image_directory = art_image_url.split("image/")
+    substr = art_image_directory[1]
+
+    base_url = "https://spclient.wg.spotify.com/color-lyrics/v2/track/" + \
+        str(track_id) + "/image/https%3A%2F%2Fi.scdn.co%2Fimage%2F" + \
+        str(substr) + "?format=json&vocalRemoval=false&market=from_token"
+
+    headers = {
+        "Host": "spclient.wg.spotify.com",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0",
+        "Accept": "application/json",
+        "Accept-Language": "en",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Referer": "https://open.spotify.com/",
+        "authorization": "Bearer " + os.getenv('BEARER_TOKEN'),
+        "app-platform": "WebPlayer",
+        "spotify-app-version": "1.1.81.4.gf0a51a16",
+        "Origin": "https://open.spotify.com",
+        "Connection": "keep-alive",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-site",
+        "Pragma": "no-cache",
+        "Cache-Control": "no-cache",
+        "TE": "trailers"
+    }
+
+    response = requests.get(base_url, headers=headers)
+    LYRICS_JSON = response.json()
+    NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
+    print(LYRICS_JSON)
+    lyrics = []
+    ms_timestamp = []
+
+    for line in range(0, NUM_LINES):
+        line_one_based = line+1
+        lyrics.append(LYRICS_JSON['lyrics']['lines'][line]['words'])
+        ms_timestamp.append(
+            LYRICS_JSON['lyrics']['lines'][line]['startTimeMs'])
+
+    current_progress = sp.current_playback()['progress_ms']
+    current_line = 0
+    for i in range(0, len(ms_timestamp)-1):
+        if((current_progress >= int(ms_timestamp[i])) and (current_progress <= int(ms_timestamp[i+1]))
+           ):
+            current_line = i
+            break
+
+    result.append(ms_timestamp)
+    result.append(current_line)
+    result.append(lyrics)
+    print(current_line)
+    return result
+
+
+GET_RESPONSE()
+
+
+def GET_TRACK_INFO():
     pass
 
 
@@ -133,11 +224,6 @@ def GET_LYRICS(sp):
     return result
 
 
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=os.getenv('CLIENT_ID'),
-                                               client_secret=os.getenv(
-    'CLIENT_SECRET'),
-    redirect_uri="http://localhost:8888/",
-    scope="user-read-playback-state"))
 # print(GET_LYRICS(sp))
 args = GET_LYRICS(sp)
 
@@ -148,7 +234,7 @@ def spotlyrics(arg):
     current_line = arg[2]
     lyrics = arg[3]
     starttime = time.time()
-    while True:
+    while False:
         track_id2 = sp.current_playback()['item']['id']
         if(track_id != track_id2):
             print("song has changed")
