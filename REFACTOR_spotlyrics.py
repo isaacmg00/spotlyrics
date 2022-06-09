@@ -77,9 +77,21 @@ def GET_LYRIC_DATA():
         "Cache-Control": "no-cache",
         "TE": "trailers"
     }
+    try:
+        response = requests.get(base_url, headers=headers)
+        RESP_CODE = response.status_code
+        if(RESP_CODE == 401):
+            raise PermissionError("401 unauthorized/token has expired")
 
-    response = requests.get(base_url, headers=headers)
-    LYRICS_JSON = response.json()
+        LYRICS_JSON = response.json()
+        NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
+
+    except (PermissionError):
+        output = subprocess.getoutput('python get_cookie.py')
+        print(output)
+        response = requests.get(base_url, headers=headers)
+        LYRICS_JSON = response.json()
+
     NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
     print(LYRICS_JSON)
     lyrics = []
