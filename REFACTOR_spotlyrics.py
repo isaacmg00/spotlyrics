@@ -36,6 +36,11 @@ base_url = "https://spclient.wg.spotify.com/color-lyrics/v2/track/" + \
 BEARER_TOKEN = ''
 
 
+def NOW_PLAYING(sp):
+    print("Now Playing: ", sp.current_playback()[
+          'item']['artists'][0]['name'], "-", sp.current_playback()['item']['name'])
+
+
 def REFRESH_BEARER_TOKEN():
     pass
 
@@ -88,12 +93,39 @@ def GET_LYRIC_DATA():
 
     except (PermissionError):
         output = subprocess.getoutput('python get_cookie.py')
-        print(output)
-        response = requests.get(base_url, headers=headers)
-        LYRICS_JSON = response.json()
+        headers = {
+            "Host": "spclient.wg.spotify.com",
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0",
+            "Accept": "application/json",
+            "Accept-Language": "en",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Referer": "https://open.spotify.com/",
+            "authorization": "Bearer " + output,
+            "app-platform": "WebPlayer",
+            "spotify-app-version": "1.1.81.4.gf0a51a16",
+            "Origin": "https://open.spotify.com",
+            "Connection": "keep-alive",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-site",
+            "Pragma": "no-cache",
+            "Cache-Control": "no-cache",
+            "TE": "trailers"
+        }
+        try:
+            response = requests.get(base_url, headers=headers)
+            LYRICS_JSON = response.json()
+            NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
+
+        except:
+            NOW_PLAYING(sp)
+            print("No lyrics found for this track.")
+            exit()
+
+    NOW_PLAYING(sp)
+    LYRICS_JSON = response.json()
 
     NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
-    print(LYRICS_JSON)
     lyrics = []
     ms_timestamp = []
 
@@ -114,7 +146,6 @@ def GET_LYRIC_DATA():
     result.append(ms_timestamp)
     result.append(current_line)
     result.append(lyrics)
-    print(current_line)
     return result
 
 
