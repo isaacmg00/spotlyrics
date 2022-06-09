@@ -7,6 +7,7 @@ import spotipy
 from dotenv import load_dotenv
 from spotipy.oauth2 import SpotifyOAuth
 import pickle
+import base64
 
 load_dotenv()
 
@@ -120,7 +121,10 @@ def GET_LYRIC_DATA():
             LYRICS_JSON = response.json()
             NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
             file = open('bearer_token.dat', 'wb')
-            pickle.dump(updated_token, file)
+            token_bytes = base64.b64encode(updated_token.encode('ascii'))
+            b64_token = token_bytes.decode('ascii')
+
+            pickle.dump(b64_token, file)
             file.close()
 
         except:
