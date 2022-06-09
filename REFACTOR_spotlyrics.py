@@ -42,7 +42,7 @@ def NOW_PLAYING(sp):
 
 
 def REFRESH_BEARER_TOKEN():
-    pass
+    return subprocess.getoutput('python get_cookie.py')
 
 
 def GET_BEARER_TOKEN():
@@ -88,11 +88,14 @@ def GET_LYRIC_DATA():
         if(RESP_CODE == 401):
             raise PermissionError("401 unauthorized/token has expired")
 
+        file = open('important', 'wb')
+        pickle.dump(data, file)
+        file.close()
         LYRICS_JSON = response.json()
         NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
 
     except (PermissionError):
-        output = subprocess.getoutput('python get_cookie.py')
+        updated_token = REFRESH_BEARER_TOKEN()
         headers = {
             "Host": "spclient.wg.spotify.com",
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0",
@@ -100,7 +103,7 @@ def GET_LYRIC_DATA():
             "Accept-Language": "en",
             "Accept-Encoding": "gzip, deflate, br",
             "Referer": "https://open.spotify.com/",
-            "authorization": "Bearer " + output,
+            "authorization": "Bearer " + updated_token,
             "app-platform": "WebPlayer",
             "spotify-app-version": "1.1.81.4.gf0a51a16",
             "Origin": "https://open.spotify.com",
@@ -116,6 +119,9 @@ def GET_LYRIC_DATA():
             response = requests.get(base_url, headers=headers)
             LYRICS_JSON = response.json()
             NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
+            file = open('bearer_token.dat', 'wb')
+            pickle.dump(updated_token, file)
+            file.close()
 
         except:
             NOW_PLAYING(sp)
