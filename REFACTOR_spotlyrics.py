@@ -37,21 +37,41 @@ base_url = "https://spclient.wg.spotify.com/color-lyrics/v2/track/" + \
 BEARER_TOKEN = ''
 
 
-def NOW_PLAYING(sp):
-    print("Now Playing: ", sp.current_playback()[
-          'item']['artists'][0]['name'], "-", sp.current_playback()['item']['name'])
-
-
 def REFRESH_BEARER_TOKEN():
     return subprocess.getoutput('python get_cookie.py')
 
 
-def GET_BEARER_TOKEN():
-    pass
-
-
 def IS_PLAYING():
     return sp.current_playback()['is_playing']
+
+
+def ENCODE_TOKEN(bearer_token):
+    token_bytes = base64.b64encode(bearer_token.encode('ascii'))
+    b64_token = token_bytes.decode('ascii')
+    return b64_token
+
+
+def DECODE_TOKEN(bearer_token):
+    return base64.b64decode(bearer_token).decode('UTF-8')
+
+
+def GET_BEARER_TOKEN():
+    file = open('bearer_token.dat', 'rb')
+    b64_token = pickle.load(file)
+    file.close()
+    return DECODE_TOKEN(b64_token)
+
+
+def DUMP_TOKEN(bearer_token):
+    file = open('bearer_token.dat', 'wb')
+    encoded = ENCODE_TOKEN(bearer_token)
+    pickle.dump(encoded, file)
+    file.close()
+
+
+def NOW_PLAYING(sp):
+    print("Now Playing: ", sp.current_playback()[
+          'item']['artists'][0]['name'], "-", sp.current_playback()['item']['name'])
 
 
 def GET_LYRIC_DATA():
@@ -64,6 +84,8 @@ def GET_LYRIC_DATA():
         str(track_id) + "/image/https%3A%2F%2Fi.scdn.co%2Fimage%2F" + \
         str(substr) + "?format=json&vocalRemoval=false&market=from_token"
 
+    BEARER_TOKEN = GET_BEARER_TOKEN()
+
     headers = {
         "Host": "spclient.wg.spotify.com",
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0",
@@ -71,7 +93,7 @@ def GET_LYRIC_DATA():
         "Accept-Language": "en",
         "Accept-Encoding": "gzip, deflate, br",
         "Referer": "https://open.spotify.com/",
-        "authorization": "Bearer " + os.getenv('BEARER_TOKEN'),
+        "authorization": "Bearer " + BEARER_TOKEN,
         "app-platform": "WebPlayer",
         "spotify-app-version": "1.1.81.4.gf0a51a16",
         "Origin": "https://open.spotify.com",
@@ -86,14 +108,12 @@ def GET_LYRIC_DATA():
     try:
         response = requests.get(base_url, headers=headers)
         RESP_CODE = response.status_code
-        if(RESP_CODE == 401):
+        if(RESP_CODE != 200):
             raise PermissionError("401 unauthorized/token has expired")
 
-        file = open('important', 'wb')
-        pickle.dump(data, file)
-        file.close()
         LYRICS_JSON = response.json()
         NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
+        DUMP_TOKEN(BEARER_TOKEN)
 
     except (PermissionError):
         updated_token = REFRESH_BEARER_TOKEN()
@@ -120,12 +140,7 @@ def GET_LYRIC_DATA():
             response = requests.get(base_url, headers=headers)
             LYRICS_JSON = response.json()
             NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
-            file = open('bearer_token.dat', 'wb')
-            token_bytes = base64.b64encode(updated_token.encode('ascii'))
-            b64_token = token_bytes.decode('ascii')
-
-            pickle.dump(b64_token, file)
-            file.close()
+            DUMP_TOKEN(updated_token)
 
         except:
             NOW_PLAYING(sp)
@@ -133,9 +148,6 @@ def GET_LYRIC_DATA():
             exit()
 
     NOW_PLAYING(sp)
-    LYRICS_JSON = response.json()
-
-    NUM_LINES = len(LYRICS_JSON['lyrics']['lines'])
     lyrics = []
     ms_timestamp = []
 
