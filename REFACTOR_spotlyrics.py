@@ -9,6 +9,7 @@ from spotipy.oauth2 import SpotifyOAuth
 import pickle
 import base64
 
+# LOCAL .ENV DELETE DURING PRODUCTION
 load_dotenv()
 
 # clear the terminal when the program starts
