@@ -206,6 +206,12 @@ def PRINT_INTERACTIVE_LYRICS(data):
 data = GET_LYRIC_DATA()
 PRINT_INTERACTIVE_LYRICS(data)
 
+data = GET_LYRIC_DATA()
+PRINT_INTERACTIVE_LYRICS(data)
+print("exiting")
+
+# will be used for checking whether the user has switched a song or not
+
 
 def GET_TRACK_INFO():
     pass
