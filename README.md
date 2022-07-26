@@ -1,7 +1,8 @@
 # spotlyrics
 
-get live lyrics line by line inside your terminal using the spotify API
+Live lyrics line by line inside your terminal using the spotify API
 features time synchronization, and full song lyric fetching, all you need are official spotify api credentials found here:
 https://developer.spotify.com/dashboard/
-TODO: changing songs, rewinding, playing after pausing, prompt for api credentials
-TODO: re-work browser cookie retrieval
+Requirements: Spotify (unsure if non-premium is working)
+TODO: API credential storage, track seek flow, ability to change songs via kb input, prompt for API creds
+Known Issues: Will crash when a song is changed
