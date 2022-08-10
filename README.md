@@ -5,4 +5,6 @@ features time synchronization, and full song lyric fetching, all you need are of
 https://developer.spotify.com/dashboard/
 Requirements: Spotify (unsure if non-premium is working)
 TODO: API credential storage, track seek flow, ability to change songs via kb input, prompt for API creds
-Known Issues: Will crash when a song is changed
+Known Issues: 
+Will crash when a song is changed
+Will crash when a song is forwarded/rewinded
