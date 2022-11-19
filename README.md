@@ -7,5 +7,5 @@ Requirements: Spotify (unsure if non-premium is working)
 TODO: API credential storage, track seek flow, ability to change songs via kb input, prompt for API creds, add different flags for printing out lyrics and potentially integrate cava to see the eq visualizer
 
 Known Issues: 
-Will crash when a song is changed
-Will crash when a song is forwarded/rewinded
+Will crash when a song is changed/forwarded/rewinded
+
