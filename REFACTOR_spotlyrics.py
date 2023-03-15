@@ -21,10 +21,10 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=os.getenv('CLIENT_ID'),
     redirect_uri="http://localhost:8888/",
     scope="user-read-playback-state"))
 
+
 track_name = sp.current_playback()['item']['name']
 track_artist = sp.current_playback()['item']['artists'][0]['name']
 track_id = sp.current_playback()['item']['id']
-
 art_image_url = sp.current_playback()['item']['album']['images'][0]['url']
 art_image_directory = art_image_url.split("image/")
 substr = art_image_directory[1]
@@ -77,6 +77,7 @@ def NOW_PLAYING(sp):
 
 def GET_LYRIC_DATA():
     result = []
+    track_id = sp.current_playback()['item']['id']
     art_image_url = sp.current_playback()['item']['album']['images'][0]['url']
     art_image_directory = art_image_url.split("image/")
     substr = art_image_directory[1]
@@ -182,11 +183,10 @@ def PRINT_INTERACTIVE_LYRICS(data):
         track_id2 = sp.current_playback()['item']['id']
         if(track_id != track_id2):
             print("song has changed")
+            os.system('cls' if os.name == 'nt' else 'clear')
+            song_changed = True
             new_track_id = sp.current_playback()['item']['id']
             track_id = new_track_id
-            track_id2 = new_track_id
-            print(track_id)
-            print(track_id2)
             break
 
         current_progress = sp.current_playback()['progress_ms']
@@ -203,15 +203,6 @@ def PRINT_INTERACTIVE_LYRICS(data):
         time.sleep(0.5 - ((time.time() - starttime) % 0.5))
 
 
-data = GET_LYRIC_DATA()
-PRINT_INTERACTIVE_LYRICS(data)
-
-data = GET_LYRIC_DATA()
-PRINT_INTERACTIVE_LYRICS(data)
-print("exiting")
-
-# will be used for checking whether the user has switched a song or not
-
-
-def GET_TRACK_INFO():
-    pass
+while(True):
+    data = GET_LYRIC_DATA()
+    PRINT_INTERACTIVE_LYRICS(data)
