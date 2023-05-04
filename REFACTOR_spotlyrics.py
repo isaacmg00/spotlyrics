@@ -73,6 +73,7 @@ def DUMP_TOKEN(bearer_token):
 def NOW_PLAYING(sp):
     print("Now Playing: ", sp.current_playback()[
           'item']['artists'][0]['name'], "-", sp.current_playback()['item']['name'])
+    print()
 
 
 def GET_LYRIC_DATA():
@@ -197,7 +198,7 @@ def PRINT_INTERACTIVE_LYRICS(data):
 
         is_playing = sp.current_playback()['is_playing']
         if(not(is_playing) and not printed):
-            print("song paused")
+            print("Playback Paised")
             printed = True
 
         time.sleep(0.5 - ((time.time() - starttime) % 0.5))

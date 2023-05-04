@@ -1,2 +1,4 @@
 .env
 ./spotlyrics.py
+./.vscode
+.cache
