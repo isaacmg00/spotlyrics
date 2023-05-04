@@ -23,7 +23,7 @@ class Cookie:
         return cookie
 
 
-cookies = list(browser_cookie3.firefox(domain_name=".spotify.com"))
+cookies = list(browser_cookie3.load(domain_name=".spotify.com"))
 
 auth_cookie = Cookie(
     sp_t=None,

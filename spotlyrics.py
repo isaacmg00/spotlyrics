@@ -198,7 +198,7 @@ def PRINT_INTERACTIVE_LYRICS(data):
 
         is_playing = sp.current_playback()['is_playing']
         if(not(is_playing) and not printed):
-            print("Playback Paised")
+            print("Playback Paused")
             printed = True
 
         time.sleep(0.5 - ((time.time() - starttime) % 0.5))
@@ -207,3 +207,4 @@ def PRINT_INTERACTIVE_LYRICS(data):
 while(True):
     data = GET_LYRIC_DATA()
     PRINT_INTERACTIVE_LYRICS(data)
+    print(BEARER_TOKEN)
