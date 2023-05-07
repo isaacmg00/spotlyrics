@@ -9,18 +9,18 @@ from spotipy.oauth2 import SpotifyOAuth
 import pickle
 import base64
 
-# LOCAL .ENV DELETE DURING PRODUCTION
+# load .env credentials
 load_dotenv()
 
 # clear the terminal when the program starts
 os.system('cls' if os.name == 'nt' else 'clear')
 
+# create spotipy instance to connect with user account and get information about current playback
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=os.getenv('CLIENT_ID'),
                                                client_secret=os.getenv(
     'CLIENT_SECRET'),
     redirect_uri="http://localhost:8888/",
     scope="user-read-playback-state"))
-
 
 track_name = sp.current_playback()['item']['name']
 track_artist = sp.current_playback()['item']['artists'][0]['name']
@@ -29,21 +29,26 @@ art_image_url = sp.current_playback()['item']['album']['images'][0]['url']
 art_image_directory = art_image_url.split("image/")
 substr = art_image_directory[1]
 
+# url to retrieve lyrics with timestamps
 base_url = "https://spclient.wg.spotify.com/color-lyrics/v2/track/" + \
     str(track_id) + "/image/https%3A%2F%2Fi.scdn.co%2Fimage%2F" + \
     str(substr) + "?format=json&vocalRemoval=false&market=from_token"
 
-
-# todo: load the token from a pickle for security
 BEARER_TOKEN = ''
+
+# after the bearer token expires, retrieve a new one valid for 1hr
 
 
 def REFRESH_BEARER_TOKEN():
     return subprocess.getoutput('python get_cookie.py')
 
+# return true if a song is currently playing, false otherwise
+
 
 def IS_PLAYING():
     return sp.current_playback()['is_playing']
+
+# converting to b64 to avoid storing user tokens in plaintext
 
 
 def ENCODE_TOKEN(bearer_token):
@@ -69,11 +74,15 @@ def DUMP_TOKEN(bearer_token):
     pickle.dump(encoded, file)
     file.close()
 
+# get the current playback information (artist, song title)
+
 
 def NOW_PLAYING(sp):
     print("Now Playing: ", sp.current_playback()[
           'item']['artists'][0]['name'], "-", sp.current_playback()['item']['name'])
     print()
+
+# retrieves the lyrics for the songs, timestamps for each line, and the current bar of the song playing
 
 
 def GET_LYRIC_DATA():
@@ -173,6 +182,8 @@ def GET_LYRIC_DATA():
     result.append(lyrics)
     return result
 
+# when called, start the interactive cli session printing lyrics line by line and checking if a song gets changed
+
 
 def PRINT_INTERACTIVE_LYRICS(data):
     track_id = sp.current_playback()['item']['id']
@@ -204,7 +215,7 @@ def PRINT_INTERACTIVE_LYRICS(data):
         time.sleep(0.5 - ((time.time() - starttime) % 0.5))
 
 
+# main function call to handle song changes and rewinds/forwards
 while(True):
     data = GET_LYRIC_DATA()
     PRINT_INTERACTIVE_LYRICS(data)
-    print(BEARER_TOKEN)
