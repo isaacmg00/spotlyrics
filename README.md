@@ -17,7 +17,6 @@ pip install -r requirements.txt
 # not currently on PyPI
 # pip install spotlyrics
 ```
-
 ### Setup API Credentials for Spotlyrics
 Once you have created a developer account, paste the `CLIENT_ID` & `CLIENT_SECRET` into a newly created .env file.
 
@@ -27,14 +26,14 @@ touch .env
 echo CLIENT_ID="\"<YOUR CLIENT_ID>"\" >> .env
 echo CLIENT_SECRET="\"<YOUR CLIENT_SECRET>"\" >> .env
 ```
+### Usage
+In the spotlyrics directory, run `python spotlyrics.py` to start the interactive cli session. 
 
+#### Known issues: 
+* rewinding a playing song will freeze the program
+* forwarding a playing song is not smooth
+* when playing a song with no lyrics, spotlyrics will crash
 
-
-features time synchronization, and full song lyric fetching, all you need are official spotify api credentials found here:
-https://developer.spotify.com/dashboard/
-Requirements: Spotify (unsure if non-premium is working)
-TODO: API credential storage, track seek flow, ability to change songs via kb input, prompt for API creds, add different flags for printing out lyrics and potentially integrate cava to see the eq visualizer
-
-Known Issues: 
-Will crash when a song is changed/forwarded/rewinded
-
+#### TODO:
+* add flag to print lyrics for the song and exit
+* create pip package
