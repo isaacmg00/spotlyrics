@@ -8,49 +8,23 @@ from dotenv import load_dotenv
 from spotipy.oauth2 import SpotifyOAuth
 import pickle
 import base64
+import sys
 
 # load .env credentials
 load_dotenv()
 
-# clear the terminal when the program starts
-os.system('cls' if os.name == 'nt' else 'clear')
-
-# create spotipy instance to connect with user account and get information about current playback
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=os.getenv('CLIENT_ID'),
-                                               client_secret=os.getenv(
-    'CLIENT_SECRET'),
-    redirect_uri="http://localhost:8888/",
-    scope="user-read-playback-state"))
-
-track_name = sp.current_playback()['item']['name']
-track_artist = sp.current_playback()['item']['artists'][0]['name']
-track_id = sp.current_playback()['item']['id']
-art_image_url = sp.current_playback()['item']['album']['images'][0]['url']
-art_image_directory = art_image_url.split("image/")
-substr = art_image_directory[1]
-
-# url to retrieve lyrics with timestamps
-base_url = "https://spclient.wg.spotify.com/color-lyrics/v2/track/" + \
-    str(track_id) + "/image/https%3A%2F%2Fi.scdn.co%2Fimage%2F" + \
-    str(substr) + "?format=json&vocalRemoval=false&market=from_token"
-
-BEARER_TOKEN = ''
 
 # after the bearer token expires, retrieve a new one valid for 1hr
-
-
 def REFRESH_BEARER_TOKEN():
     return subprocess.getoutput('python get_cookie.py')
 
+
 # return true if a song is currently playing, false otherwise
-
-
 def IS_PLAYING():
     return sp.current_playback()['is_playing']
 
+
 # converting to b64 to avoid storing user tokens in plaintext
-
-
 def ENCODE_TOKEN(bearer_token):
     token_bytes = base64.b64encode(bearer_token.encode('ascii'))
     b64_token = token_bytes.decode('ascii')
@@ -74,18 +48,25 @@ def DUMP_TOKEN(bearer_token):
     pickle.dump(encoded, file)
     file.close()
 
+
 # get the current playback information (artist, song title)
-
-
 def NOW_PLAYING(sp):
     print("Now Playing: ", sp.current_playback()[
           'item']['artists'][0]['name'], "-", sp.current_playback()['item']['name'])
     print()
 
+
 # retrieves the lyrics for the songs, timestamps for each line, and the current bar of the song playing
-
-
 def GET_LYRIC_DATA():
+    # create spotipy instance to connect with user account and get information about current playback
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=os.getenv('CLIENT_ID'),
+                                                client_secret=os.getenv(
+        'CLIENT_SECRET'),
+        redirect_uri="http://localhost:8888/",
+        scope="user-read-playback-state"))
+
+    track_name = sp.current_playback()['item']['name']
+    track_artist = sp.current_playback()['item']['artists'][0]['name']
     result = []
     track_id = sp.current_playback()['item']['id']
     art_image_url = sp.current_playback()['item']['album']['images'][0]['url']
@@ -176,15 +157,16 @@ def GET_LYRIC_DATA():
            ):
             current_line = i
             break
-
+    
     result.append(ms_timestamp)
     result.append(current_line)
     result.append(lyrics)
+    result.append(track_name)
+    result.append(track_artist)
     return result
 
+
 # when called, start the interactive cli session printing lyrics line by line and checking if a song gets changed
-
-
 def PRINT_INTERACTIVE_LYRICS(data):
     track_id = sp.current_playback()['item']['id']
     ms_timestamp = data[0]
@@ -215,7 +197,38 @@ def PRINT_INTERACTIVE_LYRICS(data):
         time.sleep(0.5 - ((time.time() - starttime) % 0.5))
 
 
-# main function call to handle song changes and rewinds/forwards
-while(True):
-    data = GET_LYRIC_DATA()
-    PRINT_INTERACTIVE_LYRICS(data)
+# main function call to handle song changes, rewinds/forwards, and user arguments
+if len(sys.argv) > 1:
+    arg = sys.argv[1]
+    if arg == "-l" or arg == "--lyrics":
+        data = GET_LYRIC_DATA()
+        if(data):
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("Lyrics for", data[3], "by", data[4], "\n")
+            for line in data[2]:
+                print(line)
+            exit()
+        else:
+            exit()
+    else:
+        print("usage: python spotlyrics.py [-h] [-l]\n")
+        print("spotlyrics - Line by line spotify lyrics\n")
+        print("options:\n",
+        "  -h, --help              show this help message and exit\n",
+        "  -l, --lyrics            print the current playback song's lyrics and exit\n"
+        )         
+        exit()
+
+else:
+    while(True):
+        sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=os.getenv('CLIENT_ID'),
+                                                client_secret=os.getenv(
+        'CLIENT_SECRET'),
+        redirect_uri="http://localhost:8888/",
+        scope="user-read-playback-state"))
+
+        # clear the terminal when the program starts
+        os.system('cls' if os.name == 'nt' else 'clear')
+        data = GET_LYRIC_DATA()
+
+        PRINT_INTERACTIVE_LYRICS(data)
