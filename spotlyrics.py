@@ -64,7 +64,12 @@ def GET_LYRIC_DATA():
         'CLIENT_SECRET'),
         redirect_uri="http://localhost:8888/",
         scope="user-read-playback-state"))
-
+    try:
+        track_name = sp.current_playback()['item']['name']
+    except (TypeError):
+        print("No song is playing. Play a song and retry.")
+        exit()
+    
     track_name = sp.current_playback()['item']['name']
     track_artist = sp.current_playback()['item']['artists'][0]['name']
     result = []
